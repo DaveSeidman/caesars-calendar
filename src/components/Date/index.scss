@@ -1,4 +1,6 @@
-.controls-field-static {
-  user-select: none;
-  -webkit-user-select: none;
+.controls-field {
+  &-static {
+    user-select: none;
+    -webkit-user-select: none;
+  }
 }

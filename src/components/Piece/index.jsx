@@ -14,20 +14,10 @@ function Piece({
   setPieceBodyRef,
   onStartDrag,
   onFocusPiece,
-  onRotateLeft,
   onRotateRight,
-  onFlipHorizontal,
-  onFlipVertical,
 }) {
-  const showPieceControls = isActive && !isDragging;
-  const handleControlPointerDown = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  };
-  const handleControlClick = (event, action) => {
-    event.preventDefault();
-    event.stopPropagation();
-    action();
+  const handlePieceDoubleClick = (event) => {
+    onRotateRight();
   };
 
   return (
@@ -37,7 +27,7 @@ function Piece({
       style={placementStyle}
       onPointerDown={onStartDrag}
       onFocus={onFocusPiece}
-      onDoubleClick={onRotateRight}
+      onDoubleClick={handlePieceDoubleClick}
       onKeyDown={(event) => {
         if (event.key === ' ' || event.key === 'Enter') {
           event.preventDefault();
@@ -47,7 +37,7 @@ function Piece({
       }}
       tabIndex={0}
       role="button"
-      aria-label={`${piece.name}. Drag to move. Double tap or double click to rotate right. Arrow left or right rotates. Arrow up or down flips vertically. Corner controls on the selected piece rotate and flip it.`}
+      aria-label={`${piece.name}. Drag to move. Double tap or double click to rotate right. Arrow left or right rotates.${piece.canFlip !== false ? ' Arrow up or down flips vertically.' : ''} Board pieces show corner controls.`}
     >
       <div
         className="piece-body"
@@ -64,46 +54,6 @@ function Piece({
           invalidSegmentIndexes={invalidSegmentIndexes}
         />
       </div>
-      {showPieceControls ? (
-        <div className="piece-controls">
-          <button
-            type="button"
-            className="piece-control piece-control-rotate-left"
-            aria-label="Rotate left"
-            onPointerDown={handleControlPointerDown}
-            onClick={(event) => handleControlClick(event, onRotateLeft)}
-          >
-            ↺
-          </button>
-          <button
-            type="button"
-            className="piece-control piece-control-rotate-right"
-            aria-label="Rotate right"
-            onPointerDown={handleControlPointerDown}
-            onClick={(event) => handleControlClick(event, onRotateRight)}
-          >
-            ↻
-          </button>
-          <button
-            type="button"
-            className="piece-control piece-control-flip-horizontal"
-            aria-label="Flip horizontally"
-            onPointerDown={handleControlPointerDown}
-            onClick={(event) => handleControlClick(event, onFlipHorizontal)}
-          >
-            ⇄
-          </button>
-          <button
-            type="button"
-            className="piece-control piece-control-flip-vertical"
-            aria-label="Flip vertically"
-            onPointerDown={handleControlPointerDown}
-            onClick={(event) => handleControlClick(event, onFlipVertical)}
-          >
-            ⇅
-          </button>
-        </div>
-      ) : null}
     </div>
   );
 }

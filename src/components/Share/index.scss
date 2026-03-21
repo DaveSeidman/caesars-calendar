@@ -1,3 +1,28 @@
-.controls-button-share {
-  background: linear-gradient(180deg, #f0c978, #cb8f45);
+.controls-button {
+  &-share {
+    background: linear-gradient(180deg, #f0c978, #cb8f45);
+  }
+
+  &-share-pulse {
+    animation: share-pulse 880ms cubic-bezier(0.22, 1, 0.36, 1) 1;
+  }
+}
+
+@keyframes share-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0.45rem 1rem rgba(72, 45, 16, 0.12);
+  }
+
+  35% {
+    transform: scale(1.08);
+    box-shadow:
+      0 0.55rem 1.15rem rgba(72, 45, 16, 0.16),
+      0 0 0 0.45rem rgba(240, 201, 120, 0.22);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0.45rem 1rem rgba(72, 45, 16, 0.12);
+  }
 }

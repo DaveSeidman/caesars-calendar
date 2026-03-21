@@ -54,6 +54,7 @@ export const PIECES = [
     id: 'piece-c',
     name: 'Piece 3',
     pivot: [1, 0],
+    canFlip: false,
     shape: [[1, 1, 1, 1]],
   },
   {
@@ -128,6 +129,7 @@ export const PIECES = [
   },
 ].map((piece) => ({
   ...piece,
+  canFlip: piece.canFlip ?? true,
   cells: shapeToCells(piece.shape),
 }));
 

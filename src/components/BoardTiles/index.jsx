@@ -12,9 +12,9 @@ function BoardTiles({ boardCells, selection, occupiedMap, cellKey, isTargetCell 
     return (
       <div
         key={cell.id}
-        className={`board-cell board-cell-${cell.type} ${revealed ? 'board-cell-target' : ''} ${covered ? 'board-cell-covered' : ''}`}
+        className={`board-cell board-cell-${cell.type} ${revealed ? 'board-cell-target board-cell-locked' : ''} ${covered ? 'board-cell-covered' : ''}`}
       >
-        {cell.label}
+        <span className="board-cell-label">{cell.label}</span>
       </div>
     );
   });

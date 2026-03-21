@@ -3,26 +3,16 @@
   --font-accent: 'Space Grotesk', 'Avenir Next', 'Helvetica Neue', sans-serif;
   --board-cell: clamp(2rem, 5.9vw, 3.45rem);
   --tray-cell: clamp(1.45rem, 3.8vw, 2.45rem);
-  --piece-a: #e4c08f;
-  --piece-b: #cf9f67;
-  --piece-c: #f0d1a0;
-  --piece-d: #b97d45;
-  --piece-e: #d8ae79;
-  --piece-f: #a96b38;
-  --piece-g: #c88b52;
-  --piece-h: #e8bf7a;
-  --piece-i: #bb8752;
-  --piece-j: #966033;
-  --piece-a-texture: url('../assets/images/wood1.png');
-  --piece-b-texture: url('../assets/images/wood2.png');
-  --piece-c-texture: url('../assets/images/wood3.png');
-  --piece-d-texture: url('../assets/images/wood4.png');
-  --piece-e-texture: url('../assets/images/wood5.png');
-  --piece-f-texture: url('../assets/images/wood6.png');
-  --piece-g-texture: url('../assets/images/wood7.png');
-  --piece-h-texture: url('../assets/images/wood8.png');
-  --piece-i-texture: url('../assets/images/wood9.png');
-  --piece-j-texture: url('../assets/images/wood10.png');
+  --piece-a: #c99660;
+  --piece-b: #c99660;
+  --piece-c: #c99660;
+  --piece-d: #c99660;
+  --piece-e: #c99660;
+  --piece-f: #c99660;
+  --piece-g: #c99660;
+  --piece-h: #c99660;
+  --piece-i: #c99660;
+  --piece-j: #c99660;
   color-scheme: light;
   font-family: var(--font-base);
   line-height: 1.4;
@@ -52,7 +42,7 @@ body {
 body {
   margin: 0;
   min-height: 100dvh;
-  min-width: 320px;
+  min-width: 0;
 }
 
 button,
@@ -66,14 +56,27 @@ select {
 }
 
 .app-shell {
+  position: relative;
   width: min(1200px, calc(100vw - 1rem));
   height: 100dvh;
   margin: 0 auto;
-  padding: clamp(0.7rem, 1.6vw, 1.1rem) 0;
+  padding: clamp(0.55rem, 1.2vw, 0.9rem) 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(0.75rem, 1.2vw, 1rem);
+  gap: clamp(0.45rem, 0.9vw, 0.8rem);
   overflow: hidden;
+}
+
+.app-share-corner {
+  position: absolute;
+  left: max(0.5rem, env(safe-area-inset-left, 0px));
+  bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+  z-index: 12;
+  pointer-events: none;
+
+  .controls-button {
+    pointer-events: auto;
+  }
 }
 
 .game {
@@ -82,30 +85,34 @@ select {
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-  gap: 1rem;
+  gap: 0.65rem;
   align-items: stretch;
-  padding-bottom: 0.25rem;
-}
+  padding-bottom: 0.1rem;
 
-.game-piece-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-}
+  &-piece-layer,
+  &-ghost-layer,
+  &-drag-layer,
+  &-controls-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
 
-.game-ghost-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  pointer-events: none;
-}
+  &-piece-layer {
+    z-index: 5;
+  }
 
-.game-drag-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 7;
-  pointer-events: none;
+  &-ghost-layer {
+    z-index: 6;
+  }
+
+  &-drag-layer {
+    z-index: 7;
+  }
+
+  &-controls-layer {
+    z-index: 8;
+  }
 }
 
 @media (max-width: 960px) {
@@ -120,13 +127,22 @@ select {
 }
 
 @media (max-width: 640px) {
-  .app-shell {
-    width: 100vw;
-    padding: 0.35rem 0 0.45rem;
-    gap: 0.45rem;
+  :root {
+    --tray-cell: min(calc((100vw - 4rem) / 10), 1.82rem);
   }
 
-  :root {
-    --tray-cell: min(calc((100vw - 4rem) / 10), 2rem);
+  .app-shell {
+    width: 100vw;
+    padding: 0.2rem 0 0.25rem;
+    gap: 0.22rem;
+  }
+
+  .app-share-corner {
+    left: max(0.35rem, env(safe-area-inset-left, 0px));
+    bottom: max(0.35rem, calc(env(safe-area-inset-bottom, 0px) + 0.1rem));
+  }
+
+  .game {
+    gap: 0.2rem;
   }
 }

@@ -1,29 +1,22 @@
 .tray {
   position: relative;
   display: block;
-  align-self: start;
+  align-self: stretch;
+  height: 100%;
   min-height: 0;
-  padding: 0.8rem;
-  border-radius: 1.6rem;
-  background: rgba(56, 37, 18, 0.92);
-  color: #f9e7c4;
-  box-shadow: 0 1.2rem 2rem rgba(39, 23, 10, 0.16);
-}
+  padding: 0.35rem 0.1rem 0;
+  border-radius: 0;
+  background: transparent;
+  color: #2a1b11;
+  box-shadow: none;
 
-.tray-grid {
-  position: relative;
-  min-height: clamp(12rem, 31vh, 17rem);
-  height: auto;
-  border-radius: 1.15rem;
-  background:
-    linear-gradient(180deg, rgba(24, 16, 8, 0.38), rgba(11, 8, 4, 0.16)),
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.04),
-      rgba(255, 255, 255, 0.04) 1px,
-      transparent 1px,
-      transparent 24px
-    );
+  &-grid {
+    position: relative;
+    height: 100%;
+    min-height: clamp(6.6rem, 18vh, 10.5rem);
+    border-radius: 0;
+    background: transparent;
+  }
 }
 
 @media (max-width: 960px) {
@@ -34,11 +27,21 @@
 
 @media (max-width: 640px) {
   .tray {
-    padding: 0.7rem;
+    padding: 0.15rem 0 0;
     min-height: 0;
-  }
+    height: auto;
 
-  .tray-grid {
-    min-height: 9.25rem;
+    &-grid {
+      min-height: clamp(5.1rem, 13vh, 6.35rem);
+      height: auto;
+    }
+  }
+}
+
+@media (max-height: 760px) {
+  .tray {
+    &-grid {
+      min-height: 4.9rem;
+    }
   }
 }
