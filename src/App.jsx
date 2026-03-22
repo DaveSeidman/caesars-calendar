@@ -14,6 +14,7 @@ import {
   BOARD_COLS,
   buildBoardCells,
   cellKey,
+  clamp,
   createInitialPlacements,
   getDropPlacement,
   getPieceBounds,
@@ -203,6 +204,75 @@ function App() {
       const col = placement.col + x;
       return row >= 0 && row < BOARD_ROWS.length && col >= 0 && col < BOARD_COLS;
     });
+  };
+
+  const isPointInsidePieceShape = (pieceId, clientX, clientY) => {
+    const element = pieceRefs.current[pieceId];
+    const piece = piecesById[pieceId];
+    const placement = placements[pieceId];
+
+    if (!element || !piece || !placement) {
+      return false;
+    }
+
+    const rect = element.getBoundingClientRect();
+
+    if (
+      clientX < rect.left ||
+      clientX > rect.right ||
+      clientY < rect.top ||
+      clientY > rect.bottom
+    ) {
+      return false;
+    }
+
+    const geometry = getTransformedGeometry(
+      piece.cells,
+      piece.pivot,
+      placement.rotation,
+      placement.mirrored,
+    );
+    const bounds = getPieceBounds(geometry.cells);
+    const width = bounds.maxX - bounds.minX + 1;
+    const height = bounds.maxY - bounds.minY + 1;
+
+    if (!width || !height || !rect.width || !rect.height) {
+      return false;
+    }
+
+    const unitX = rect.width / width;
+    const unitY = rect.height / height;
+    const localX = clamp(clientX - rect.left, 0, Math.max(0, rect.width - 0.001));
+    const localY = clamp(clientY - rect.top, 0, Math.max(0, rect.height - 0.001));
+    const hitCellX = Math.floor(localX / unitX);
+    const hitCellY = Math.floor(localY / unitY);
+
+    return geometry.cells.some(([x, y]) => x === hitCellX && y === hitCellY);
+  };
+
+  const resolvePieceAtPoint = (clientX, clientY, fallbackPieceId = null) => {
+    if (typeof document === 'undefined') {
+      return fallbackPieceId;
+    }
+
+    const seen = new Set();
+    const candidateIds = [];
+
+    document.elementsFromPoint(clientX, clientY).forEach((element) => {
+      const pieceElement = element.closest?.('.piece[data-piece-id]');
+      const pieceId = pieceElement?.dataset?.pieceId;
+
+      if (pieceId && !seen.has(pieceId)) {
+        seen.add(pieceId);
+        candidateIds.push(pieceId);
+      }
+    });
+
+    if (fallbackPieceId && !seen.has(fallbackPieceId)) {
+      candidateIds.push(fallbackPieceId);
+    }
+
+    return candidateIds.find((pieceId) => isPointInsidePieceShape(pieceId, clientX, clientY)) ?? null;
   };
 
   const preservePieceAnchor = (pieceId, currentPlacement, nextPlacement) => {
@@ -814,6 +884,16 @@ function App() {
       'rotate-right',
     );
 
+  const rotatePieceRightAtPointer = (event, fallbackPieceId) => {
+    const resolvedPieceId = resolvePieceAtPoint(event.clientX, event.clientY, fallbackPieceId);
+
+    if (!resolvedPieceId) {
+      return;
+    }
+
+    rotatePieceRight(resolvedPieceId);
+  };
+
   const flipPieceVertical = (pieceId) =>
     piecesById[pieceId]?.canFlip === false
       ? null
@@ -919,8 +999,14 @@ function App() {
   };
 
   const startDrag = (event, pieceId) => {
-    const piece = piecesById[pieceId];
-    const placement = placements[pieceId];
+    const resolvedPieceId = resolvePieceAtPoint(event.clientX, event.clientY, pieceId);
+
+    if (!resolvedPieceId) {
+      return;
+    }
+
+    const piece = piecesById[resolvedPieceId];
+    const placement = placements[resolvedPieceId];
     const rotatedCells = getTransformedGeometry(
       piece.cells,
       piece.pivot,
@@ -930,7 +1016,7 @@ function App() {
     const bounds = getPieceBounds(rotatedCells);
     const width = bounds.maxX - bounds.minX + 1;
     const height = bounds.maxY - bounds.minY + 1;
-    const sourceRect = event.currentTarget.getBoundingClientRect();
+    const sourceRect = (pieceRefs.current[resolvedPieceId] ?? event.currentTarget).getBoundingClientRect();
     const boardGridRect = boardGridRef.current?.getBoundingClientRect();
     const pieceUnit =
       placement.col !== null && boardGridRect
@@ -940,10 +1026,10 @@ function App() {
     const pointerOffsetY = event.clientY - sourceRect.top;
 
     event.preventDefault();
-    setActivePieceId(pieceId);
+    setActivePieceId(resolvedPieceId);
 
     const nextDragState = {
-      pieceId,
+      pieceId: resolvedPieceId,
       rotation: placement.rotation,
       mirrored: placement.mirrored,
       pointerX: event.clientX,
@@ -959,9 +1045,9 @@ function App() {
       originTrayPosition:
         placement.col === null
           ? {
-            x: placement.trayX ?? getDefaultTrayPosition(pieceId).x,
-            y: placement.trayY ?? getDefaultTrayPosition(pieceId).y,
-          }
+              x: placement.trayX ?? getDefaultTrayPosition(resolvedPieceId).x,
+              y: placement.trayY ?? getDefaultTrayPosition(resolvedPieceId).y,
+            }
           : null,
       originBoardPosition:
         placement.col !== null
@@ -1053,6 +1139,7 @@ function App() {
               onStartDrag={startDrag}
               onFocusPiece={setActivePieceId}
               onRotateRight={rotatePieceRight}
+              onRotateRightAtPointer={rotatePieceRightAtPointer}
             />
           ) : null}
         </div>
@@ -1100,6 +1187,7 @@ function App() {
               onStartDrag={startDrag}
               onFocusPiece={setActivePieceId}
               onRotateRight={rotatePieceRight}
+              onRotateRightAtPointer={rotatePieceRightAtPointer}
             />
           ) : null}
         </div>

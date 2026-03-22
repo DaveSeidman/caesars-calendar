@@ -24,6 +24,7 @@ function PieceLayer({
   onStartDrag,
   onFocusPiece,
   onRotateRight,
+  onRotateRightAtPointer,
 }) {
   const getPiecePlacementStyle = (pieceId) => {
     const placement = placements[pieceId];
@@ -144,6 +145,7 @@ function PieceLayer({
         onStartDrag={(event) => onStartDrag(event, piece.id)}
         onFocusPiece={() => onFocusPiece(piece.id)}
         onRotateRight={() => onRotateRight(piece.id)}
+        onRotateRightAtPointer={(event) => onRotateRightAtPointer(event, piece.id)}
       />
     );
   });

@@ -15,14 +15,16 @@ function Piece({
   onStartDrag,
   onFocusPiece,
   onRotateRight,
+  onRotateRightAtPointer,
 }) {
   const handlePieceDoubleClick = (event) => {
-    onRotateRight();
+    onRotateRightAtPointer(event);
   };
 
   return (
     <div
       className={`piece ${piece.id} piece-${area} ${isDragging ? 'piece-dragging' : ''} ${isActive ? 'piece-active' : ''}`}
+      data-piece-id={piece.id}
       ref={setPieceRef}
       style={placementStyle}
       onPointerDown={onStartDrag}
