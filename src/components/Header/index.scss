@@ -98,13 +98,18 @@
   }
 
   &-menu-item {
+    display: flex;
+    align-items: center;
     width: 100%;
     min-height: 2.45rem;
+    padding: 0 0.75rem;
     border: 0;
     border-radius: 0.8rem;
     background: transparent;
+    font: inherit;
     color: #21170f;
     text-align: left;
+    text-decoration: none;
     font-weight: 700;
     cursor: pointer;
 

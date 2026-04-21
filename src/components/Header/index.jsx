@@ -98,15 +98,24 @@ function Header({
             className={`controls-menu-item ${infoView === 'instructions' ? 'controls-menu-item-active' : ''}`}
             onClick={() => setInfoView((current) => (current === 'instructions' ? null : 'instructions'))}
           >
-            How to play
+            How To Play
           </button>
           <button
             type="button"
             className={`controls-menu-item ${infoView === 'auto-solve' ? 'controls-menu-item-active' : ''}`}
             onClick={() => setInfoView('auto-solve')}
           >
-            Auto solve
+            Auto Solve
           </button>
+          <a
+            className="controls-menu-item"
+            href="https://www.amazon.com/s?srs=39153704011&rh=p_89%3ADragonFjord"
+            target="_blank"
+            rel="noreferrer"
+            onClick={closeInfo}
+          >
+            Purchase Puzzle
+          </a>
         </div>
       ) : null}
       {showInfoMenu && infoView === 'instructions' ? (
@@ -134,7 +143,7 @@ function Header({
                 onAutoSolve();
               }}
             >
-              Auto solve
+              Auto Solve
             </button>
             <button
               type="button"
